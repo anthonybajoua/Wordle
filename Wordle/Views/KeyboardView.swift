@@ -36,6 +36,7 @@ private struct KeyboardRowView: View {
     var lastRow = false
     var viewModel: WordleGameViewModel
     
+    
     var body: some View {
         HStack {
             if (lastRow) {
@@ -52,7 +53,8 @@ private struct KeyboardRowView: View {
 }
 
 private struct BackButton: View {
-    let viewModel: WordleGameViewModel
+    @ObservedObject
+    var viewModel: WordleGameViewModel
     var body: some View {
         ZStack {
             Circle().stroke()
@@ -61,10 +63,23 @@ private struct BackButton: View {
             .onTapGesture {
                 viewModel.backspace()
             }
+        .alert("Correct!", isPresented: $viewModel.game.isWinner) {
+            Button("Next word", role: .cancel) {
+                viewModel.resetGame()
+            }
+        }
+        .alert("Incorrect, the word was \(self.viewModel.game.word)", isPresented: $viewModel.game.isLoser) {
+            Button("Next word", role: .cancel) {
+                viewModel.resetGame()
+            }
+        }
     }
 }
 
 private struct EnterButton: View {
+    @State
+    private var showingAlert = false
+    
     let viewModel: WordleGameViewModel
     var body: some View {
         ZStack {
@@ -80,7 +95,6 @@ private struct EnterButton: View {
 private struct KeyView: View {
     var key: WordleGame.Key
     var viewModel: WordleGameViewModel
-    
     
     var body: some View {
         ZStack {

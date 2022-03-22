@@ -20,21 +20,35 @@ struct WordleGame: Codable {
     
     static let EMPTY_BOX = TextBox(state: State.Empty)
     
-    var guesses: [[TextBox]]!
-    var keyboardRows: [[Key]]!
-    var word: String!
-    var i = 0
-    var j = 0
-    var score = 0
+    private(set) var guesses: [[TextBox]]!
+    private(set) var keyboardRows: [[Key]]!
+    private(set) var word: String!
+    var isWinner = false
+    var isLoser = false
+
+    
+    private var wordList: Set<String>!
+    private var i = 0
+    private var j = 0
     
     init() {
+        if let path = Bundle.main.path(forResource: "WordList", ofType: "txt") {
+            do {
+                let data = try String(contentsOfFile: path, encoding: .utf8)
+                wordList = Set(data.components(separatedBy: .newlines))
+            } catch {
+                print(error)
+            }
+        }
         reset()
     }
     
     mutating func reset() {
         guesses = []
         keyboardRows = []
-        word = WORD_LIST.randomElement()?.uppercased() ?? "HAPPY"
+        isWinner = false
+        isLoser = false
+        word = wordList.randomElement()?.uppercased() ?? "HAPPY"
         i = 0
         j = 0
         print("Wordle with \(word ?? "")")
@@ -68,20 +82,18 @@ struct WordleGame: Codable {
                 guess += txtBox.content
             }
                         
-            if (WORD_LIST.contains(guess.lowercased())) {
+            if (wordList.contains(guess.lowercased())) {
                 updateStates()
                 if (word == guess) {
                     print("Correct guess")
-                    reset()
-                    // TODO handle correct guess.
+                    isWinner = true
                 } else {
-                    if (i < WordleGame.NUM_GUESSES) {
+                    if (i < WordleGame.NUM_GUESSES - 1) {
                         i += 1
                         j = 0
                     } else {
                         print("Loser")
-                        // TODO handle lose case
-                        reset()
+                        isLoser = true
                     }
                 }
             } else {
@@ -118,7 +130,6 @@ struct WordleGame: Codable {
                 }
             }
         }
-        
         
         for ii in keyboardRows.indices {
             for jj in keyboardRows[ii].indices {

@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct WordleView: View {
     
     @StateObject
     var viewModel = WordleGameViewModel()
@@ -16,6 +16,7 @@ struct ContentView: View {
         VStack {
             GuessesView(viewModel: viewModel).padding()
             KeyboardView(viewModel: viewModel).padding()
+            SkipPanel(viewModel: viewModel).padding()
         }.onAppWentToBackground {
             viewModel.saveGame()
           }
