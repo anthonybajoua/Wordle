@@ -167,5 +167,3 @@ struct WordleGame: Codable {
     }
 }
 
-
-

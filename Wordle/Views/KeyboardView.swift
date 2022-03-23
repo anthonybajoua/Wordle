@@ -17,7 +17,7 @@ struct KeyboardView: View {
     
     var body: some View {
         VStack {
-            ForEach(viewModel.game.keyboardRows.indices) {idx in
+            ForEach(viewModel.game.keyboardRows.indices, id:\.self) {idx in
                 if (idx == viewModel.game.keyboardRows.count - 1) {
                     KeyboardRowView(keys: viewModel.game.keyboardRows[idx], lastRow: true, viewModel: viewModel)
                 } else {
@@ -29,7 +29,6 @@ struct KeyboardView: View {
     
 }
 
-
 // UI for keyboard
 private struct KeyboardRowView: View {
     var keys: [WordleGame.Key]
@@ -40,13 +39,13 @@ private struct KeyboardRowView: View {
     var body: some View {
         HStack {
             if (lastRow) {
-                BackButton(viewModel: viewModel)
+                EnterButton(viewModel: viewModel)
             }
-            ForEach(keys.indices) {idx in
+            ForEach(keys.indices, id:\.self) {idx in
                 KeyView(key: keys[idx], viewModel: viewModel)
             }
             if (lastRow) {
-                EnterButton(viewModel: viewModel)
+                BackButton(viewModel: viewModel)
             }
         }
     }

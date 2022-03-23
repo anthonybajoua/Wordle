@@ -15,7 +15,7 @@ struct GuessesView: View {
     
     var body : some View {
         VStack {
-            ForEach(viewModel.game.guesses.indices) {
+            ForEach(viewModel.game.guesses.indices, id:\.self) {
                 idx in GuessRowView(chars: viewModel.game.guesses[idx], viewModel: viewModel)
             }
         }
@@ -29,7 +29,7 @@ private struct GuessRowView: View {
 
     var body: some View {
         HStack {
-            ForEach(chars.indices) {idx in
+            ForEach(chars.indices, id:\.self) {idx in
                 GuessKeyView(txt: chars[idx], viewModel: viewModel)
             }
         }
